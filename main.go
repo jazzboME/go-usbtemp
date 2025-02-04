@@ -44,6 +44,10 @@ func (u *USBtemp) Open(portName string) error {
 			u.Name = port.Name
 		}
 	}
+	if curPort == nil {
+		return fmt.Errorf("%s is not a valid port", portName)
+	}
+
 	if !curPort.IsUSB {
 		return fmt.Errorf("%s is not USB", portName)
 	}
@@ -53,7 +57,7 @@ func (u *USBtemp) Open(portName string) error {
 
 	port, err := serial.Open(portName, mode9600)
 	if err != nil {
-		return fmt.Errorf("failed to open port: %w", err)
+		return fmt.Errorf("failed to open port %s: %w", portName, err)
 	}
 	u.port = port
 	return nil
