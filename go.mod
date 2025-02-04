@@ -1,4 +1,4 @@
-module github.com/jazzboME/usbtemp-go
+module github.com/jazzboME/go-usbtemp
 
 go 1.23.2
 

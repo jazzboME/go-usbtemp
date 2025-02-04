@@ -1,1 +1,1 @@
-# usbtemp-go
+# go-usbtemp
