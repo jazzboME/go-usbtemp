@@ -1,3 +1,5 @@
+// Package usbtemp provides acesss to read a DS18B20-1 wire sensor such as the usbtemp device.
+
 package usbtemp
 
 import (
@@ -20,13 +22,17 @@ var mode9600 = &serial.Mode {
 	DataBits: 8,
 }
 
+// A USBtemp holds indentifiying device information (port name, USB ID and serial number) as well as the 
+// link to the underlying serial.Port connection
 type USBtemp struct {
-	Name string
-	Id string
-	SerialNumber string
-	port serial.Port
+	Name string // returns the port name, typically /dev/ttyUSB0
+	Id string // USB ID for the device
+	SerialNumber string // Device Serial Number
+	port serial.Port 
 }
 
+// Open initiaties the connection with the USB Device on the port named by portName and sets the relevant
+// identification fields within the struct
 func (u *USBtemp) Open(portName string) error {
 	ports, err := enumerator.GetDetailedPortsList()
 	if err != nil {
@@ -63,11 +69,14 @@ func (u *USBtemp) Open(portName string) error {
 	return nil
 }
 
+// Close closes the port when finished
 func (u *USBtemp) Close() error {
 	err := u.port.Close()
 	return err
 }
 
+// Temperature returns the current temperature reading of the device as a float32, passing true for the
+// fahrenheit parameter will convert the required temperature, otherwise it will return the celsius value.
 func (u *USBtemp) Temperature(fahrenheit bool) (float32, error) {
 	if err := u.reset(); err != nil {
 		return 0, err
@@ -105,6 +114,7 @@ func (u *USBtemp) Temperature(fahrenheit bool) (float32, error) {
 	return celsius, nil
 }
 
+// Rom returns the device's serial number.
 func (u *USBtemp) Rom() (string, error) {
 	if err := u.reset(); err != nil {
 		return "", err
